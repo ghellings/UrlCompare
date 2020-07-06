@@ -33,7 +33,7 @@ def request_url(url)
   Net::HTTP.start(
     uri.host, 
     uri.port, 
-    {"User-Agent" => "SearchSpring"}
+    {"User-Agent" => "UrlCompare"}
   ) do | http |
     request = Net::HTTP::Get.new uri
     response = http.request request
