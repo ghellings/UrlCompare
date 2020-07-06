@@ -19,6 +19,9 @@ OptionParser.new do |opts|
   opts.on("-q TEXTFILE", "--queries=TEXTFILE", "Text file containing queries to compare") do |queries|
     options[:queries] = queries
   end
+  opts.on("-p URI_PREFIX", "--prefix=URI_PREFIX", "Stuff you want inserted between the url and query") do |prefix|
+    options[:prefix] = prefix
+  end  
 end.parse!
 
 def request_url(url)
@@ -55,8 +58,8 @@ ftime_total = 0.0
 stime_total = 0.0
 while (line = file.gets)
   query = line.gsub(/\A"|"\Z/, '')
-  fbody,ftime = request_url("http://#{options[:first]}/api/search/monitor.json/?#{query}")
-  sbody,stime = request_url("http://#{options[:second]}/api/search/monitor.json/?#{query}")
+  fbody,ftime = request_url("http://#{options[:first]}/#{options[:prefix]}/?#{query}")
+  sbody,stime = request_url("http://#{options[:second]}/#{options[:prefix]}/?#{query}")
   if fbody.size == sbody.size
     if ( ftime - stime ).abs > 0.5
       puts "Slow: \n#{query}\n"
