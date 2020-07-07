@@ -21,7 +21,10 @@ OptionParser.new do |opts|
   end
   opts.on("-p URI_PREFIX", "--prefix=URI_PREFIX", "Stuff you want inserted between the url and query") do |prefix|
     options[:prefix] = prefix
-  end  
+  end
+  opts.on("-d", "--differ", "Print diff output") do |differ|
+    options[:differ] = differ
+  end
 end.parse!
 
 def request_url(url)
@@ -69,8 +72,10 @@ while (line = file.gets)
   else 
     puts "Query results didn't match : #{query}\n"
     puts "Size difference #{fbody.size} - #{sbody.size}\n"
-    Differ.format = :color
-    puts Differ.diff_by_word(fbody,sbody).to_s
+    if options[:differ]
+      Differ.format = :color
+      puts Differ.diff_by_word(fbody,sbody).to_s
+    end
     next
   end
   ftime_total = ftime_total + ftime
