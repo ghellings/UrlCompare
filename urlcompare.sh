@@ -33,8 +33,11 @@ OptionParser.new do |opts|
   opts.on("-s SLOWTIME","--slow SLOWTIME",Numeric, "A number in seconds to trigger 'slow time'" ) do |slow|
     options[:slow] = slow
   end
-  opts.on("-l MAXLEV","--max-lev-dist=MAXLEV",Numeric, "Maxium levenshtein distance") do |maxlev|
+  opts.on("-m MAXLEV","--max-lev-dist=MAXLEV",Numeric, "Maxium levenshtein distance") do |maxlev|
     options[:maxlev] = maxlev
+  end
+  opts.on("-l", "--use-lev", "Use levenshtein distance") do |uselev|
+    options[:uselev] = uselev
   end
 end.parse!
 
@@ -96,8 +99,10 @@ while (line = file.gets)
   else 
     puts "Query results didn't match : #{query}\n"
     puts "Size difference #{fbody.size} - #{sbody.size}\n"
-    score = lev.distance(fbody.to_s,sbody.to_s,0,options[:maxlev].to_i)
-    puts "Levenshtein score: #{score}\n"
+    if options[:uselev]
+      score = lev.distance(fbody.to_s,sbody.to_s,0,options[:maxlev].to_i)
+      puts "Levenshtein score: #{score}\n"
+    end
     if options[:differ]
       Differ.format = :color
       puts Differ.diff_by_word(fbody,sbody).to_s
